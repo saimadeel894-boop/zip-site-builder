@@ -533,14 +533,14 @@ export function RoadTripAnimation({
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.8 }}
-            className="pointer-events-none absolute inset-0 flex items-center justify-center"
+            className="pointer-events-none absolute inset-0 flex items-center justify-center px-4"
           >
-            <div className="text-center">
+            <div className="w-full max-w-full text-center">
               <motion.p
                 initial={{ y: 14, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: 0.2, duration: 0.7 }}
-                className="text-xs font-semibold uppercase tracking-[0.5em] text-primary"
+                className="text-[9px] font-semibold uppercase tracking-[0.35em] text-primary sm:text-xs sm:tracking-[0.5em]"
               >
                 A Cinematic Journey
               </motion.p>
@@ -548,14 +548,14 @@ export function RoadTripAnimation({
                 initial={{ y: 24, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: 0.35, duration: 0.9 }}
-                className="mt-4 leading-[0.9] tracking-tight text-[color:var(--deep)]"
+                className="mt-2 leading-[0.9] tracking-tight text-balance text-[color:var(--deep)] sm:mt-4"
                 style={{ fontFamily: "var(--font-display)", fontWeight: 400 }}
               >
-                <span className="block text-5xl sm:text-7xl md:text-[7.5rem]">
+                <span className="block text-[2rem] xs:text-4xl sm:text-7xl md:text-[7.5rem]">
                   Summer Road Trip
                 </span>
                 <span
-                  className="mt-2 block text-4xl italic text-primary sm:text-6xl md:text-8xl"
+                  className="mt-1 block text-2xl italic text-primary sm:mt-2 sm:text-6xl md:text-8xl"
                 >
                   2026
                 </span>
@@ -564,11 +564,12 @@ export function RoadTripAnimation({
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.7, duration: 0.8 }}
-                className="mt-6 text-xs font-semibold uppercase tracking-[0.4em] text-muted-foreground sm:text-sm"
+                className="mt-3 text-[8px] font-semibold uppercase tracking-[0.25em] text-muted-foreground sm:mt-6 sm:text-sm sm:tracking-[0.4em]"
               >
                 {WAYPOINTS.length - 1} Stops · {TOTAL_MILES.toLocaleString()} Miles · One RV
               </motion.p>
             </div>
+
           </motion.div>
         )}
 
