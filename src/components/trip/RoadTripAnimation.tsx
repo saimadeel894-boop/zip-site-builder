@@ -619,15 +619,23 @@ export function RoadTripAnimation({
 
       {/* Top-left brand chip */}
       {!chromeless && (
-        <div className="pointer-events-none absolute left-6 top-6 flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.35em] text-muted-foreground">
+        <div
+          className="pointer-events-none absolute left-6 top-6 flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.35em] text-muted-foreground"
+          style={{ zIndex: 30 }}
+        >
           <span className="h-1.5 w-1.5 rounded-full bg-primary" />
           Summer Road Trip · 2026
         </div>
       )}
 
-      {/* Fixed UI layer: separate from the SVG map/camera transform. */}
-      {!chromeless && stage !== "intro" && stage !== "reveal" && (
-        <div data-mileage-layer="fixed-ui" className="pointer-events-none absolute inset-0 z-50">
+      {/* Fixed UI layer — completely separate from the map/camera layer.
+          Never scales, pans, or reflows with the map. */}
+      {!chromeless && stage !== "intro" && (
+        <div
+          data-mileage-layer="fixed-ui"
+          className="pointer-events-none absolute inset-0"
+          style={{ zIndex: 100 }}
+        >
           <ProgressReadout
             segmentLens={segmentLens}
             pathLen={pathLen}
@@ -635,6 +643,7 @@ export function RoadTripAnimation({
           />
         </div>
       )}
+
 
       {/* Playback controls */}
       {showControls && timeline && (
@@ -739,12 +748,25 @@ function ProgressReadout({
   const fmt = (n: number) => n.toLocaleString("en-US");
 
   return (
-    <div data-mileage-box="true" className="absolute right-6 top-6 h-[76px] w-[260px]">
-      <div className="flex h-full w-full flex-col items-end justify-center gap-1 rounded-2xl border border-border/70 bg-white/95 px-5 text-right shadow-[0_16px_38px_-16px_rgba(15,23,42,0.45)] backdrop-blur-md">
+    <div
+      data-mileage-box="true"
+      // Pinned to one fixed screen position for the entire animation:
+      // 24px from the top, 24px from the right. Fixed width + height so the
+      // text inside can never push the box into other elements.
+      style={{
+        position: "absolute",
+        top: 24,
+        right: 24,
+        width: 268,
+        height: 80,
+        zIndex: 100,
+      }}
+    >
+      <div className="flex h-full w-full flex-col items-end justify-center gap-1 overflow-hidden rounded-2xl border border-border px-5 text-right shadow-[0_16px_38px_-16px_rgba(15,23,42,0.45)]" style={{ background: "#ffffff" }}>
         <p className="text-[9px] font-semibold uppercase tracking-[0.4em] text-muted-foreground">
           {complete ? "Total Distance" : "Mileage"}
         </p>
-        <p className="text-sm font-bold uppercase tracking-[0.22em] tabular-nums text-[color:var(--deep)]">
+        <p className="whitespace-nowrap text-sm font-bold uppercase tracking-[0.18em] tabular-nums text-[color:var(--deep)]">
           {complete
             ? `${fmt(TOTAL_MILES)} Miles`
             : `${fmt(miles)} of ${fmt(TOTAL_MILES)} Miles`}
@@ -753,6 +775,7 @@ function ProgressReadout({
     </div>
   );
 }
+
 
 function Cloud({ x, y, scale }: { x: number; y: number; scale: number }) {
   return (
