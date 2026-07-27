@@ -243,6 +243,8 @@ export const PerfChart = memo(function PerfChart({
                 : "hover the chart for details"}
             </span>
           </div>
+
+          <PerfSummary samples={samples} />
         </>
       )}
     </div>
