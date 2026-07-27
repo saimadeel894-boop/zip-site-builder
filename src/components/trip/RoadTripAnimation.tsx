@@ -533,14 +533,14 @@ export function RoadTripAnimation({
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.8 }}
-            className="pointer-events-none absolute inset-0 flex items-center justify-center"
+            className="pointer-events-none absolute inset-0 flex items-center justify-center px-4 pb-14 pt-12 sm:p-0"
           >
-            <div className="text-center">
+            <div className="w-full max-w-full text-center">
               <motion.p
                 initial={{ y: 14, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: 0.2, duration: 0.7 }}
-                className="text-xs font-semibold uppercase tracking-[0.5em] text-primary"
+                className="hidden text-[9px] font-semibold uppercase tracking-[0.35em] text-primary sm:block sm:text-xs sm:tracking-[0.5em]"
               >
                 A Cinematic Journey
               </motion.p>
@@ -548,14 +548,14 @@ export function RoadTripAnimation({
                 initial={{ y: 24, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: 0.35, duration: 0.9 }}
-                className="mt-4 leading-[0.9] tracking-tight text-[color:var(--deep)]"
+                className="mt-2 leading-[0.9] tracking-tight text-balance text-[color:var(--deep)] sm:mt-4"
                 style={{ fontFamily: "var(--font-display)", fontWeight: 400 }}
               >
-                <span className="block text-5xl sm:text-7xl md:text-[7.5rem]">
+                <span className="block text-xl sm:text-7xl md:text-[7.5rem]">
                   Summer Road Trip
                 </span>
                 <span
-                  className="mt-2 block text-4xl italic text-primary sm:text-6xl md:text-8xl"
+                  className="mt-0.5 block text-lg italic text-primary sm:mt-2 sm:text-6xl md:text-8xl"
                 >
                   2026
                 </span>
@@ -564,11 +564,12 @@ export function RoadTripAnimation({
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.7, duration: 0.8 }}
-                className="mt-6 text-xs font-semibold uppercase tracking-[0.4em] text-muted-foreground sm:text-sm"
+                className="mt-2 hidden text-[8px] font-semibold uppercase tracking-[0.25em] text-muted-foreground sm:mt-6 sm:block sm:text-sm sm:tracking-[0.4em]"
               >
                 {WAYPOINTS.length - 1} Stops · {TOTAL_MILES.toLocaleString()} Miles · One RV
               </motion.p>
             </div>
+
           </motion.div>
         )}
 
@@ -579,14 +580,14 @@ export function RoadTripAnimation({
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 1.2, ease: [0.65, 0, 0.35, 1] }}
-            className="pointer-events-none absolute inset-0 flex items-center justify-center"
+            className="pointer-events-none absolute inset-0 flex items-center justify-center px-4 pb-14 pt-12 sm:p-0"
           >
-            <div className="text-center">
+            <div className="w-full max-w-full text-center">
               <motion.p
                 initial={{ opacity: 0, letterSpacing: "0.2em" }}
-                animate={{ opacity: 1, letterSpacing: "0.5em" }}
+                animate={{ opacity: 1, letterSpacing: "0.35em" }}
                 transition={{ duration: 1.1, ease: [0.65, 0, 0.35, 1] }}
-                className="text-xs font-semibold uppercase tracking-[0.5em] text-primary"
+                className="hidden text-[9px] font-semibold uppercase text-primary sm:block sm:text-xs"
               >
                 Journey Complete
               </motion.p>
@@ -594,13 +595,13 @@ export function RoadTripAnimation({
                 initial={{ y: 18, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: 0.25, duration: 1.1, ease: [0.65, 0, 0.35, 1] }}
-                className="mt-4 leading-[0.9] tracking-tight text-[color:var(--deep)]"
+                className="mt-2 leading-[0.9] tracking-tight text-balance text-[color:var(--deep)] sm:mt-4"
                 style={{ fontFamily: "var(--font-display)", fontWeight: 400 }}
               >
-                <span className="block text-5xl sm:text-7xl md:text-[6.5rem]">
+                <span className="block text-xl sm:text-7xl md:text-[6.5rem]">
                   Summer Road Trip
                 </span>
-                <span className="mt-2 block text-4xl italic text-primary sm:text-6xl md:text-7xl">
+                <span className="mt-0.5 block text-lg italic text-primary sm:mt-2 sm:text-6xl md:text-7xl">
                   2026
                 </span>
               </motion.h2>
@@ -608,11 +609,12 @@ export function RoadTripAnimation({
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.6, duration: 0.9 }}
-                className="mt-6 text-[11px] font-semibold uppercase tracking-[0.4em] text-muted-foreground sm:text-sm"
+                className="mt-2 hidden text-[8px] font-semibold uppercase tracking-[0.25em] text-muted-foreground sm:mt-6 sm:block sm:text-sm sm:tracking-[0.4em]"
               >
                 {TOTAL_MILES.toLocaleString()} Miles · {WAYPOINTS.length - 1} Stops
               </motion.p>
             </div>
+
           </motion.div>
         )}
       </AnimatePresence>
@@ -620,13 +622,14 @@ export function RoadTripAnimation({
       {/* Top-left brand chip */}
       {!chromeless && (
         <div
-          className="pointer-events-none absolute left-6 top-6 flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.35em] text-muted-foreground"
+          className="pointer-events-none absolute left-3 top-3 flex max-w-[45%] items-center gap-1.5 truncate text-[8px] font-semibold uppercase tracking-[0.2em] text-muted-foreground sm:left-6 sm:top-6 sm:max-w-none sm:gap-2 sm:text-[10px] sm:tracking-[0.35em]"
           style={{ zIndex: 30 }}
         >
-          <span className="h-1.5 w-1.5 rounded-full bg-primary" />
-          Summer Road Trip · 2026
+          <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-primary" />
+          <span className="truncate">Summer Road Trip · 2026</span>
         </div>
       )}
+
 
       {/* Fixed UI layer — completely separate from the map/camera layer.
           Never scales, pans, or reflows with the map. */}
@@ -683,12 +686,12 @@ function PlaybackControls({
   onRestart: () => void;
 }) {
   return (
-    <div className="pointer-events-auto absolute bottom-6 left-1/2 z-20 flex w-[min(560px,calc(100%-3rem))] -translate-x-1/2 items-center gap-3 rounded-full border border-border/60 bg-white/90 px-4 py-2 shadow-[0_10px_30px_-12px_rgba(15,23,42,0.35)] backdrop-blur">
+    <div className="pointer-events-auto absolute bottom-3 left-1/2 z-20 flex w-[min(560px,calc(100%-1.5rem))] -translate-x-1/2 items-center gap-2 rounded-full border border-border/60 bg-white/90 px-3 py-1.5 shadow-[0_10px_30px_-12px_rgba(15,23,42,0.35)] backdrop-blur sm:bottom-6 sm:w-[min(560px,calc(100%-3rem))] sm:gap-3 sm:px-4 sm:py-2">
       <button
         type="button"
         onClick={onToggle}
         aria-label={isPlaying ? "Pause" : "Play"}
-        className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[color:var(--deep)] text-white transition hover:opacity-90"
+        className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[color:var(--deep)] text-white transition hover:opacity-90 sm:h-8 sm:w-8"
       >
         {isPlaying ? <Pause size={14} /> : <Play size={14} className="translate-x-[1px]" />}
       </button>
@@ -696,11 +699,11 @@ function PlaybackControls({
         type="button"
         onClick={onRestart}
         aria-label="Restart"
-        className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-border text-[color:var(--deep)] transition hover:bg-slate-100"
+        className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-border text-[color:var(--deep)] transition hover:bg-slate-100 sm:h-8 sm:w-8"
       >
         <RotateCcw size={13} />
       </button>
-      <span className="w-10 shrink-0 text-right text-[10px] font-semibold tabular-nums tracking-wider text-[color:var(--deep)]">
+      <span className="hidden w-10 shrink-0 text-right text-[10px] font-semibold tabular-nums tracking-wider text-[color:var(--deep)] sm:block">
         {formatTime(time)}
       </span>
       <input
@@ -711,7 +714,7 @@ function PlaybackControls({
         value={Math.min(time, duration)}
         onChange={(e) => onScrub(parseFloat(e.target.value))}
         aria-label="Scrub timeline"
-        className="h-1 w-full flex-1 cursor-pointer appearance-none rounded-full bg-slate-200 accent-[color:var(--primary)]"
+        className="h-1 w-full min-w-0 flex-1 cursor-pointer appearance-none rounded-full bg-slate-200 accent-[color:var(--primary)]"
         style={{
           background: `linear-gradient(to right, var(--primary) 0%, var(--primary) ${
             duration > 0 ? (time / duration) * 100 : 0
@@ -720,10 +723,13 @@ function PlaybackControls({
           }%, rgb(226,232,240) 100%)`,
         }}
       />
-      <span className="w-10 shrink-0 text-[10px] font-semibold tabular-nums tracking-wider text-muted-foreground">
-        {formatTime(duration)}
+      <span className="w-9 shrink-0 text-[9px] font-semibold tabular-nums tracking-wider text-muted-foreground sm:w-10 sm:text-[10px]">
+        <span className="sm:hidden">{formatTime(time)}</span>
+        <span className="hidden sm:inline">{formatTime(duration)}</span>
       </span>
+
     </div>
+
   );
 }
 
@@ -750,23 +756,20 @@ function ProgressReadout({
   return (
     <div
       data-mileage-box="true"
-      // Pinned to one fixed screen position for the entire animation:
-      // 24px from the top, 24px from the right. Fixed width + height so the
-      // text inside can never push the box into other elements.
-      style={{
-        position: "absolute",
-        top: 24,
-        right: 24,
-        width: 268,
-        height: 80,
-        zIndex: 100,
-      }}
+      // Pinned to one fixed screen position for the entire animation
+      // (12px inset on mobile, 24px from sm up). Fixed width + height per
+      // breakpoint so the text inside can never push into other elements.
+      className="absolute right-3 top-3 h-[46px] w-[142px] sm:right-6 sm:top-6 sm:h-[80px] sm:w-[268px]"
+      style={{ zIndex: 100 }}
     >
-      <div className="flex h-full w-full flex-col items-end justify-center gap-1 overflow-hidden rounded-2xl border border-border px-5 text-right shadow-[0_16px_38px_-16px_rgba(15,23,42,0.45)]" style={{ background: "#ffffff" }}>
-        <p className="text-[9px] font-semibold uppercase tracking-[0.4em] text-muted-foreground">
+      <div
+        className="flex h-full w-full flex-col items-end justify-center gap-0.5 overflow-hidden rounded-xl border border-border px-3 text-right shadow-[0_16px_38px_-16px_rgba(15,23,42,0.45)] sm:gap-1 sm:rounded-2xl sm:px-5"
+        style={{ background: "#ffffff" }}
+      >
+        <p className="text-[7px] font-semibold uppercase tracking-[0.25em] text-muted-foreground sm:text-[9px] sm:tracking-[0.4em]">
           {complete ? "Total Distance" : "Mileage"}
         </p>
-        <p className="whitespace-nowrap text-sm font-bold uppercase tracking-[0.18em] tabular-nums text-[color:var(--deep)]">
+        <p className="whitespace-nowrap text-[10px] font-bold uppercase tracking-[0.08em] tabular-nums text-[color:var(--deep)] sm:text-sm sm:tracking-[0.18em]">
           {complete
             ? `${fmt(TOTAL_MILES)} Miles`
             : `${fmt(miles)} of ${fmt(TOTAL_MILES)} Miles`}
@@ -775,6 +778,7 @@ function ProgressReadout({
     </div>
   );
 }
+
 
 
 function Cloud({ x, y, scale }: { x: number; y: number; scale: number }) {
