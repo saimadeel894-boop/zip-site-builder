@@ -147,12 +147,12 @@ export function ExportPanel() {
 
   return (
     <>
-      <div className="pointer-events-auto absolute bottom-6 right-6 z-20 flex flex-col items-end gap-2">
+      <div className="pointer-events-auto absolute bottom-14 right-3 z-20 flex flex-row items-end gap-2 sm:bottom-6 sm:right-6 sm:flex-col">
         <button
           type="button"
           onClick={() => handleExport("16:9")}
           disabled={aspect !== null}
-          className="rounded-full bg-[color:var(--deep)] px-4 py-2 text-[10px] font-semibold uppercase tracking-[0.3em] text-white shadow-lg transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40"
+          className="rounded-full bg-[color:var(--deep)] px-3 py-1.5 text-[8px] font-semibold uppercase tracking-[0.2em] text-white shadow-lg transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40 sm:px-4 sm:py-2 sm:text-[10px] sm:tracking-[0.3em]"
         >
           Export 16:9
         </button>
@@ -160,11 +160,12 @@ export function ExportPanel() {
           type="button"
           onClick={() => handleExport("9:16")}
           disabled={aspect !== null}
-          className="rounded-full bg-primary px-4 py-2 text-[10px] font-semibold uppercase tracking-[0.3em] text-white shadow-lg transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40"
+          className="rounded-full bg-primary px-3 py-1.5 text-[8px] font-semibold uppercase tracking-[0.2em] text-white shadow-lg transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40 sm:px-4 sm:py-2 sm:text-[10px] sm:tracking-[0.3em]"
         >
           Export 9:16
         </button>
       </div>
+
 
       {aspect && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm">
