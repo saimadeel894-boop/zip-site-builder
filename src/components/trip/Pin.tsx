@@ -19,7 +19,7 @@ const ICON_RADIUS = 17;
 const LABEL_GAP = 14;
 
 export function Pin({ waypoint, visible, compact = false }: Props) {
-  const iconSize = compact ? 12 : 16;
+  const iconSize = compact ? 16 : 22;
   const side = waypoint.labelSide;
   const labelW = Math.max(104, waypoint.name.length * 8.6 + 26);
   const labelH = 34;
