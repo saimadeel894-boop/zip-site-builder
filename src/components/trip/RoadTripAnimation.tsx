@@ -455,25 +455,9 @@ export function RoadTripAnimation({
         <g>
           {cloudLayer}
         </g>
-        <g style={{ display: "none" }}>
-          {[].map((c: never, i: number) => (
-            <motion.g
-              key={i}
-              initial={{ x: c.x, opacity: 0 }}
-              animate={{ x: [c.x - 40, c.x + 40, c.x - 40], opacity: 0.55 }}
-              transition={{
-                x: { duration: 18 + i * 3, repeat: Infinity, ease: "easeInOut" },
-                opacity: { duration: 2, delay: c.delay * 0.1 },
-              }}
-            >
-              <Cloud x={0} y={c.y} scale={c.s} />
-            </motion.g>
-          ))}
-        </g>
-
         {/* Camera group */}
         <motion.g style={{ transform: cameraTransform }}>
-          <UsaMap />
+          {mapLayer}
 
           {/* Route — soft glow underlay + main stroke */}
           <path
@@ -718,6 +702,14 @@ const PlaybackControls = memo(function PlaybackControls({
   onScrub: (v: number) => void;
   onRestart: () => void;
 }) {
+  // Re-render the scrubber at most ~10x/second (0.1s steps) instead of every
+  // animation frame; the playhead itself stays in the motion value.
+  const [displayTime, setDisplayTime] = useState(() => time.get());
+  useMotionValueEvent(time, "change", (v) => {
+    const q = Math.round(v * 10) / 10;
+    setDisplayTime((prev) => (prev === q ? prev : q));
+  });
+
   return (
     <div className="pointer-events-auto absolute bottom-3 left-1/2 z-20 flex w-[min(560px,calc(100%-1.5rem))] -translate-x-1/2 items-center gap-2 rounded-full border border-border/60 bg-white/90 px-3 py-1.5 shadow-[0_10px_30px_-12px_rgba(15,23,42,0.35)] backdrop-blur sm:bottom-6 sm:w-[min(560px,calc(100%-3rem))] sm:gap-3 sm:px-4 sm:py-2">
       <button
@@ -737,34 +729,34 @@ const PlaybackControls = memo(function PlaybackControls({
         <RotateCcw size={13} />
       </button>
       <span className="hidden w-10 shrink-0 text-right text-[10px] font-semibold tabular-nums tracking-wider text-[color:var(--deep)] sm:block">
-        {formatTime(time)}
+        {formatTime(displayTime)}
       </span>
       <input
         type="range"
         min={0}
         max={duration}
         step={0.05}
-        value={Math.min(time, duration)}
+        value={Math.min(displayTime, duration)}
         onChange={(e) => onScrub(parseFloat(e.target.value))}
         aria-label="Scrub timeline"
         className="h-1 w-full min-w-0 flex-1 cursor-pointer appearance-none rounded-full bg-slate-200 accent-[color:var(--primary)]"
         style={{
           background: `linear-gradient(to right, var(--primary) 0%, var(--primary) ${
-            duration > 0 ? (time / duration) * 100 : 0
+            duration > 0 ? (displayTime / duration) * 100 : 0
           }%, rgb(226,232,240) ${
-            duration > 0 ? (time / duration) * 100 : 0
+            duration > 0 ? (displayTime / duration) * 100 : 0
           }%, rgb(226,232,240) 100%)`,
         }}
       />
       <span className="w-9 shrink-0 text-[9px] font-semibold tabular-nums tracking-wider text-muted-foreground sm:w-10 sm:text-[10px]">
-        <span className="sm:hidden">{formatTime(time)}</span>
+        <span className="sm:hidden">{formatTime(displayTime)}</span>
         <span className="hidden sm:inline">{formatTime(duration)}</span>
       </span>
 
     </div>
 
   );
-}
+});
 
 function ProgressReadout({
   segmentLens,

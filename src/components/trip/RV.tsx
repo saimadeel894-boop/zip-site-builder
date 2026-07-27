@@ -1,19 +1,18 @@
+import { memo } from "react";
 import { motion } from "framer-motion";
 
 type Props = {
-  /** Rotation angle in degrees, positive = clockwise. */
-  angle: number;
-  /** 0 = idle, 1 = driving; used to spin wheels + tilt slightly. */
-  moving: number;
+  /** Whether the wheels should spin (driving). */
+  spinning: boolean;
 };
 
 /**
  * Top-down/side-hybrid RV. Drawn around origin (0,0) so the parent
  * translates/rotates it into place along the route.
  */
-export function RV({ angle, moving }: Props) {
+export const RV = memo(function RV({ spinning }: Props) {
   return (
-    <g style={{ transform: `rotate(${angle}deg)` }}>
+    <g>
       {/* soft shadow */}
       <ellipse cx={0} cy={7} rx={16} ry={3} fill="rgba(15, 23, 42, 0.18)" />
 
@@ -35,7 +34,7 @@ export function RV({ angle, moving }: Props) {
 
       {/* wheels — spin while moving */}
       <motion.g
-        animate={{ rotate: moving > 0.1 ? 360 : 0 }}
+        animate={{ rotate: spinning ? 360 : 0 }}
         transition={{ repeat: Infinity, duration: 0.5, ease: "linear" }}
         style={{ originX: "-9px", originY: "5px" }}
       >
@@ -43,7 +42,7 @@ export function RV({ angle, moving }: Props) {
         <rect x={-9.3} y={2.6} width={0.6} height={4.8} fill="#ffffff" opacity={0.7} />
       </motion.g>
       <motion.g
-        animate={{ rotate: moving > 0.1 ? 360 : 0 }}
+        animate={{ rotate: spinning ? 360 : 0 }}
         transition={{ repeat: Infinity, duration: 0.5, ease: "linear" }}
         style={{ originX: "7px", originY: "5px" }}
       >
@@ -52,4 +51,4 @@ export function RV({ angle, moving }: Props) {
       </motion.g>
     </g>
   );
-}
+});
