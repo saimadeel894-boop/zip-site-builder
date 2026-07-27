@@ -4,8 +4,26 @@ import { RoadTripAnimation } from "@/components/trip/RoadTripAnimation";
 import { ExportPanel } from "@/components/trip/ExportPanel";
 
 export const Route = createFileRoute("/")({
+  head: () => ({
+    meta: [
+      { title: "Route Weaver — Animated US Road Trip Maps" },
+      {
+        name: "description",
+        content:
+          "Watch an RV trace your cross-country route across an animated US map, then export the trip as a shareable clip.",
+      },
+      { property: "og:title", content: "Route Weaver — Animated US Road Trip Maps" },
+      {
+        property: "og:description",
+        content: "Animate and export your cross-country road trip route on a stylized US map.",
+      },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
+    ],
+  }),
   component: Index,
 });
+
 
 function Index() {
   return (
