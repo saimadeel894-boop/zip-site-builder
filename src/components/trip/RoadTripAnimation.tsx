@@ -305,8 +305,10 @@ export function RoadTripAnimation({
         return "Map reveal";
       case "zoomHome":
         return "Zoom to start";
-      case "driving":
-        return dest ? `Driving → ${dest}` : "Driving";
+      case "driving": {
+        const next = WAYPOINTS[visibleIndex + 1]?.name;
+        return next ? `Driving → ${next}` : "Driving";
+      }
       case "arrived":
         return dest ? `Arrived · ${dest}` : "Arrived";
       case "outro":
