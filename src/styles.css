@@ -63,25 +63,37 @@
 
 :root {
   --radius: 0.625rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.129 0.042 264.695);
+  --radius: 1rem;
+  /* Summer Road Trip — light, Apple/Google-Maps inspired */
+  --background: oklch(0.985 0.005 240);
+  --foreground: oklch(0.22 0.05 260);
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.129 0.042 264.695);
+  --card-foreground: oklch(0.22 0.05 260);
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.129 0.042 264.695);
-  --primary: oklch(0.208 0.042 265.755);
-  --primary-foreground: oklch(0.984 0.003 247.858);
-  --secondary: oklch(0.968 0.007 247.896);
-  --secondary-foreground: oklch(0.208 0.042 265.755);
-  --muted: oklch(0.968 0.007 247.896);
-  --muted-foreground: oklch(0.554 0.046 257.417);
-  --accent: oklch(0.968 0.007 247.896);
-  --accent-foreground: oklch(0.208 0.042 265.755);
+  --popover-foreground: oklch(0.22 0.05 260);
+  --primary: oklch(0.55 0.19 258);      /* trip blue #2563EB-ish */
+  --primary-foreground: oklch(0.99 0 0);
+  --secondary: oklch(0.96 0.01 245);
+  --secondary-foreground: oklch(0.22 0.05 260);
+  --muted: oklch(0.96 0.01 245);
+  --muted-foreground: oklch(0.52 0.03 255);
+  --accent: oklch(0.72 0.15 155);        /* soft green highlight */
+  --accent-foreground: oklch(0.2 0.05 260);
+  --deep: oklch(0.24 0.08 265);          /* deep navy #0D2B45 */
+  --map-land: oklch(0.955 0.008 240);
+  --map-land-stroke: oklch(0.88 0.014 245);
+  --map-nation-stroke: oklch(0.74 0.03 250);
+  --map-water: oklch(0.965 0.014 235);
+  --route: oklch(0.55 0.19 258);
+  --route-glow: oklch(0.68 0.17 258 / 0.35);
+  --pin: oklch(0.55 0.19 258);
+  --pin-deep: oklch(0.36 0.14 262);
+  --cloud: oklch(1 0 0 / 0.85);
   --destructive: oklch(0.577 0.245 27.325);
   --destructive-foreground: oklch(0.984 0.003 247.858);
-  --border: oklch(0.929 0.013 255.508);
-  --input: oklch(0.929 0.013 255.508);
-  --ring: oklch(0.704 0.04 256.788);
+  --border: oklch(0.92 0.012 250);
+  --input: oklch(0.92 0.012 250);
+  --ring: oklch(0.55 0.19 258);
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
   --chart-3: oklch(0.398 0.07 227.392);
@@ -95,6 +107,9 @@
   --sidebar-accent-foreground: oklch(0.208 0.042 265.755);
   --sidebar-border: oklch(0.929 0.013 255.508);
   --sidebar-ring: oklch(0.704 0.04 256.788);
+  --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, -apple-system,
+    "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-display: "Instrument Serif", ui-serif, Georgia, "Times New Roman", serif;
 }
 
 .dark {
@@ -140,5 +155,8 @@
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
   }
 }
