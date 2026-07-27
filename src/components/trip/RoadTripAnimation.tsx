@@ -753,23 +753,20 @@ function ProgressReadout({
   return (
     <div
       data-mileage-box="true"
-      // Pinned to one fixed screen position for the entire animation:
-      // 24px from the top, 24px from the right. Fixed width + height so the
-      // text inside can never push the box into other elements.
-      style={{
-        position: "absolute",
-        top: 24,
-        right: 24,
-        width: 268,
-        height: 80,
-        zIndex: 100,
-      }}
+      // Pinned to one fixed screen position for the entire animation
+      // (12px inset on mobile, 24px from sm up). Fixed width + height per
+      // breakpoint so the text inside can never push into other elements.
+      className="absolute right-3 top-3 h-[46px] w-[142px] sm:right-6 sm:top-6 sm:h-[80px] sm:w-[268px]"
+      style={{ zIndex: 100 }}
     >
-      <div className="flex h-full w-full flex-col items-end justify-center gap-1 overflow-hidden rounded-2xl border border-border px-5 text-right shadow-[0_16px_38px_-16px_rgba(15,23,42,0.45)]" style={{ background: "#ffffff" }}>
-        <p className="text-[9px] font-semibold uppercase tracking-[0.4em] text-muted-foreground">
+      <div
+        className="flex h-full w-full flex-col items-end justify-center gap-0.5 overflow-hidden rounded-xl border border-border px-3 text-right shadow-[0_16px_38px_-16px_rgba(15,23,42,0.45)] sm:gap-1 sm:rounded-2xl sm:px-5"
+        style={{ background: "#ffffff" }}
+      >
+        <p className="text-[7px] font-semibold uppercase tracking-[0.25em] text-muted-foreground sm:text-[9px] sm:tracking-[0.4em]">
           {complete ? "Total Distance" : "Mileage"}
         </p>
-        <p className="whitespace-nowrap text-sm font-bold uppercase tracking-[0.18em] tabular-nums text-[color:var(--deep)]">
+        <p className="whitespace-nowrap text-[10px] font-bold uppercase tracking-[0.08em] tabular-nums text-[color:var(--deep)] sm:text-sm sm:tracking-[0.18em]">
           {complete
             ? `${fmt(TOTAL_MILES)} Miles`
             : `${fmt(miles)} of ${fmt(TOTAL_MILES)} Miles`}
@@ -778,6 +775,7 @@ function ProgressReadout({
     </div>
   );
 }
+
 
 
 function Cloud({ x, y, scale }: { x: number; y: number; scale: number }) {
