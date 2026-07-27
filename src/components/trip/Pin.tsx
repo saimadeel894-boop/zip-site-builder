@@ -15,8 +15,8 @@ const PIN_HEIGHT = 34;
 const ICON_OFFSET = 34;
 // Icon badge outer radius (matches the visual ring below).
 const ICON_RADIUS = 17;
-// Minimum breathing room between the icon badge and the label rect.
-const LABEL_GAP = 14;
+// Minimum breathing room between the icon badge and the label rect (>= 16px).
+const LABEL_GAP = 18;
 
 export function Pin({ waypoint, visible, compact = false }: Props) {
   const iconSize = compact ? 16 : 22;
