@@ -540,7 +540,7 @@ export function RoadTripAnimation({
                 initial={{ y: 14, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: 0.2, duration: 0.7 }}
-                className="text-[9px] font-semibold uppercase tracking-[0.35em] text-primary sm:text-xs sm:tracking-[0.5em]"
+                className="hidden text-[9px] font-semibold uppercase tracking-[0.35em] text-primary sm:block sm:text-xs sm:tracking-[0.5em]"
               >
                 A Cinematic Journey
               </motion.p>
@@ -564,7 +564,7 @@ export function RoadTripAnimation({
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.7, duration: 0.8 }}
-                className="mt-2 text-[8px] font-semibold uppercase tracking-[0.25em] text-muted-foreground sm:mt-6 sm:text-sm sm:tracking-[0.4em]"
+                className="mt-2 hidden text-[8px] font-semibold uppercase tracking-[0.25em] text-muted-foreground sm:mt-6 sm:block sm:text-sm sm:tracking-[0.4em]"
               >
                 {WAYPOINTS.length - 1} Stops · {TOTAL_MILES.toLocaleString()} Miles · One RV
               </motion.p>
@@ -587,7 +587,7 @@ export function RoadTripAnimation({
                 initial={{ opacity: 0, letterSpacing: "0.2em" }}
                 animate={{ opacity: 1, letterSpacing: "0.35em" }}
                 transition={{ duration: 1.1, ease: [0.65, 0, 0.35, 1] }}
-                className="text-[9px] font-semibold uppercase text-primary sm:text-xs"
+                className="hidden text-[9px] font-semibold uppercase text-primary sm:block sm:text-xs"
               >
                 Journey Complete
               </motion.p>
@@ -609,7 +609,7 @@ export function RoadTripAnimation({
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.6, duration: 0.9 }}
-                className="mt-2 text-[8px] font-semibold uppercase tracking-[0.25em] text-muted-foreground sm:mt-6 sm:text-sm sm:tracking-[0.4em]"
+                className="mt-2 hidden text-[8px] font-semibold uppercase tracking-[0.25em] text-muted-foreground sm:mt-6 sm:block sm:text-sm sm:tracking-[0.4em]"
               >
                 {TOTAL_MILES.toLocaleString()} Miles · {WAYPOINTS.length - 1} Stops
               </motion.p>
