@@ -1,18 +1,7 @@
 import { memo, useCallback, useEffect, useRef, useState } from "react";
-import { Circle, Download, Square } from "lucide-react";
-
-type Sample = {
-  /** ms since recording started */
-  t: number;
-  fps: number;
-  avgMs: number;
-  worstMs: number;
-  frames: number;
-  scene: string;
-  speed: number;
-  /** 1 when the scene changed at this sample */
-  transition: 0 | 1;
-};
+import { BarChart2, Circle, Download, Square } from "lucide-react";
+import { PerfChart } from "./PerfChart";
+import type { PerfSample as Sample } from "./perf-types";
 
 function toCsv(rows: Sample[]): string {
   const head = [
@@ -60,6 +49,8 @@ export const FpsMeter = memo(function FpsMeter({
   const [stats, setStats] = useState({ fps: 0, avg: 0, worst: 0 });
   const [recording, setRecording] = useState(false);
   const [sampleCount, setSampleCount] = useState(0);
+  const [chartOpen, setChartOpen] = useState(false);
+  const [chartData, setChartData] = useState<Sample[]>([]);
 
   // Latest scene/speed without restarting the rAF loop.
   const metaRef = useRef({ scene: scene ?? "", speed: speed ?? 0 });
@@ -107,6 +98,7 @@ export const FpsMeter = memo(function FpsMeter({
             transition,
           });
           setSampleCount(samplesRef.current.length);
+          setChartData([...samplesRef.current]);
         }
 
         acc = 0;
@@ -126,6 +118,7 @@ export const FpsMeter = memo(function FpsMeter({
       if (next) {
         samplesRef.current = [];
         setSampleCount(0);
+        setChartData([]);
         startRef.current = performance.now();
         lastSceneRef.current = "";
       }
@@ -156,6 +149,10 @@ export const FpsMeter = memo(function FpsMeter({
         : "text-destructive";
 
   return (
+    <>
+      {chartOpen && (
+        <PerfChart samples={chartData} onClose={() => setChartOpen(false)} />
+      )}
     <div
       className="pointer-events-auto absolute bottom-3 left-3 flex items-center gap-2 rounded-full border border-border/70 bg-background/90 px-2.5 py-1 font-mono text-[10px] leading-none shadow-sm backdrop-blur sm:bottom-6 sm:left-6 sm:text-[11px]"
       style={{ zIndex: 110 }}
@@ -220,6 +217,24 @@ export const FpsMeter = memo(function FpsMeter({
           </button>
           <button
             type="button"
+            onClick={() => {
+              setChartData([...samplesRef.current]);
+              setChartOpen((c) => !c);
+            }}
+            disabled={!sampleCount}
+            aria-label="Show performance chart"
+            aria-pressed={chartOpen}
+            title="Show performance chart"
+            className={`flex h-5 w-5 items-center justify-center rounded-full transition disabled:opacity-30 ${
+              chartOpen
+                ? "bg-[color:var(--deep)] text-white"
+                : "text-muted-foreground hover:bg-muted"
+            }`}
+          >
+            <BarChart2 size={10} />
+          </button>
+          <button
+            type="button"
             onClick={download}
             disabled={!sampleCount}
             aria-label="Download performance CSV"
@@ -231,5 +246,6 @@ export const FpsMeter = memo(function FpsMeter({
         </span>
       )}
     </div>
+    </>
   );
 });
