@@ -55,66 +55,70 @@ export function Pin({ waypoint, visible, compact = false }: Props) {
         <circle cx={0} cy={-PIN_HEIGHT * 0.65} r={PIN_HEIGHT * 0.22} fill="#ffffff" />
       </motion.g>
 
-      {/* icon badge above the pin */}
+      {/* icon badge above the pin — static placement lives on the outer <g> so
+          Framer Motion's animated transform can never clobber it. */}
       {!compact && (
-        <motion.g
-          data-map-icon={waypoint.id}
-          initial={{ scale: 0, opacity: 0 }}
-          animate={visible ? { scale: 1, opacity: 1 } : { scale: 0, opacity: 0 }}
-          transition={{ type: "spring", stiffness: 260, damping: 20, delay: 0.15 }}
-          style={{ transform: `translate(0px, ${-PIN_HEIGHT - ICON_OFFSET}px)` }}
-        >
-          <circle r={ICON_RADIUS} fill="#ffffff" stroke="var(--pin)" strokeWidth={1.4} />
-          <circle r={ICON_RADIUS + 3} fill="none" stroke="var(--pin)" strokeWidth={0.6} opacity={0.35} />
-          <g style={{ transform: `translate(-${iconSize / 2}px, -${iconSize / 2}px)`, color: "var(--deep)" }}>
-            <DestinationIcon icon={waypoint.icon} size={iconSize} />
-          </g>
-        </motion.g>
+        <g style={{ transform: `translate(0px, ${-PIN_HEIGHT - ICON_OFFSET}px)` }}>
+          <motion.g
+            data-map-icon={waypoint.id}
+            initial={{ scale: 0, opacity: 0 }}
+            animate={visible ? { scale: 1, opacity: 1 } : { scale: 0, opacity: 0 }}
+            transition={{ type: "spring", stiffness: 260, damping: 20, delay: 0.15 }}
+          >
+            <circle r={ICON_RADIUS} fill="#ffffff" stroke="var(--pin)" strokeWidth={1.4} />
+            <circle r={ICON_RADIUS + 3} fill="none" stroke="var(--pin)" strokeWidth={0.6} opacity={0.35} />
+            <g style={{ color: "var(--deep)" }} transform={`translate(${-iconSize / 2} ${-iconSize / 2})`}>
+              <DestinationIcon icon={waypoint.icon} size={iconSize} />
+            </g>
+          </motion.g>
+        </g>
       )}
 
       {/* name label */}
       {!compact && (
-        <motion.g
-          data-map-label={waypoint.id}
-          initial={{ opacity: 0, y: 6 }}
-          animate={visible ? { opacity: 1, y: 0 } : { opacity: 0, y: 6 }}
-          transition={{ duration: 0.5, delay: 0.35 }}
-          style={{ transform: `translate(${labelPos.x}px, ${labelPos.y}px)` }}
-        >
-          <rect
-            x={0}
-            y={-labelH / 2}
-            width={labelW}
-            height={labelH}
-            rx={8}
-            fill="#ffffff"
-            stroke="var(--border)"
-            strokeWidth={0.9}
-          />
-          <text
-            x={12}
-            y={-2}
-            fontSize={11.5}
-            fontWeight={700}
-            fill="var(--deep)"
-            letterSpacing={0.6}
+        <g style={{ transform: `translate(${labelPos.x}px, ${labelPos.y}px)` }}>
+          <motion.g
+            data-map-label={waypoint.id}
+            initial={{ opacity: 0, y: 6 }}
+            animate={visible ? { opacity: 1, y: 0 } : { opacity: 0, y: 6 }}
+            transition={{ duration: 0.5, delay: 0.35 }}
           >
-            {waypoint.name.toUpperCase()}
-          </text>
-          {waypoint.region && (
+            <rect
+              x={0}
+              y={-labelH / 2}
+              width={labelW}
+              height={labelH}
+              rx={8}
+              fill="#ffffff"
+              stroke="var(--border)"
+              strokeWidth={0.9}
+            />
             <text
               x={12}
-              y={12}
-              fontSize={8.5}
-              fontWeight={600}
-              fill="var(--muted-foreground)"
-              letterSpacing={0.4}
+              y={-2}
+              fontSize={11.5}
+              fontWeight={700}
+              fill="var(--deep)"
+              letterSpacing={0.6}
             >
-              {waypoint.region}
+              {waypoint.name.toUpperCase()}
             </text>
-          )}
-        </motion.g>
+            {waypoint.region && (
+              <text
+                x={12}
+                y={12}
+                fontSize={8.5}
+                fontWeight={600}
+                fill="var(--muted-foreground)"
+                letterSpacing={0.4}
+              >
+                {waypoint.region}
+              </text>
+            )}
+          </motion.g>
+        </g>
       )}
+
 
     </g>
   );
