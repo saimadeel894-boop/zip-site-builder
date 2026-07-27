@@ -724,9 +724,10 @@ function PlaybackControls({
         }}
       />
       <span className="w-9 shrink-0 text-[9px] font-semibold tabular-nums tracking-wider text-muted-foreground sm:w-10 sm:text-[10px]">
-        {formatTime(time)}
-        <span className="hidden sm:inline"> </span>
+        <span className="sm:hidden">{formatTime(time)}</span>
+        <span className="hidden sm:inline">{formatTime(duration)}</span>
       </span>
+
     </div>
 
   );
