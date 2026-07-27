@@ -141,6 +141,12 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const search = useRouterState({ select: (s) => s.location.searchStr });
+
+  useEffect(() => {
+    trackPageView(`${pathname}${search ?? ""}`);
+  }, [pathname, search]);
 
   return (
     <QueryClientProvider client={queryClient}>
@@ -149,3 +155,4 @@ function RootComponent() {
     </QueryClientProvider>
   );
 }
+
