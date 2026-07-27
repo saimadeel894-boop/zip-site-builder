@@ -18,7 +18,10 @@ import { DestinationIcon } from "./DestinationIcons";
 const VIEW_W = 975;
 const VIEW_H = 610;
 // Base zoom so the map fills ~85-90% of the frame instead of the full viewBox.
-const BASE_SCALE = 1.15;
+// Continental-US center in the 975x610 viewBox (ignores the AK/HI inset corner).
+const MAP_CX = 495;
+const MAP_CY = 268;
+const BASE_SCALE = 1.32;
 
 type Stage =
   | "intro"
@@ -96,8 +99,8 @@ function sampleStep<T>(kfs: StepKf<T>[], t: number): T {
 }
 
 function buildTimeline(segmentLens: number[]): Timeline {
-  const camX: ContKf[] = [{ t: 0, v: 487.5 }];
-  const camY: ContKf[] = [{ t: 0, v: 305 }];
+  const camX: ContKf[] = [{ t: 0, v: MAP_CX }];
+  const camY: ContKf[] = [{ t: 0, v: MAP_CY }];
   const camS: ContKf[] = [{ t: 0, v: BASE_SCALE }];
   const path: ContKf[] = [{ t: 0, v: 0 }];
   const rvOp: ContKf[] = [{ t: 0, v: 0 }];
@@ -193,8 +196,8 @@ function buildTimeline(segmentLens: number[]): Timeline {
   // Scene 6 — outro overview (2.6s + 2.2s hold)
   snapshot(t);
   stage.push({ t, v: "outro" });
-  tween(camX, t, t + 2.6, 487.5, easeCam);
-  tween(camY, t, t + 2.6, 305, easeCam);
+  tween(camX, t, t + 2.6, MAP_CX, easeCam);
+  tween(camY, t, t + 2.6, MAP_CY, easeCam);
   tween(camS, t, t + 2.6, BASE_SCALE, easeCam);
   t += 2.6;
   t += 2.6;
@@ -225,8 +228,8 @@ export function RoadTripAnimation({
 
   // Live motion values driven from the deterministic timeline.
   const pathLen = useMotionValue(0);
-  const camX = useMotionValue(487.5);
-  const camY = useMotionValue(305);
+  const camX = useMotionValue(MAP_CX);
+  const camY = useMotionValue(MAP_CY);
   const camScale = useMotionValue(BASE_SCALE);
   const rvOpacity = useMotionValue(0);
   const rvMoving = useMotionValue(0);

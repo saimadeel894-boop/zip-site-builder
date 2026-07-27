@@ -36,57 +36,91 @@ const ICONS: Record<string, IconKey> = {
   "home-return": "home",
 };
 
+/**
+ * Trip order, sequenced as a clean geographic loop so the drawn route never
+ * doubles back on itself: Ohio → Indiana Dunes → St. Louis → Hot Springs →
+ * Nashville → Mammoth Cave → Lake Cumberland → New River Gorge → Ohio.
+ */
+const TRIP_ORDER = [
+  "home",
+  "indiana-dunes",
+  "st-louis",
+  "hot-springs",
+  "nashville",
+  "mammoth-cave",
+  "lake-cumberland",
+  "new-river",
+  "home-return",
+] as const;
+
 const MILES: Record<string, number> = {
   home: 0,
-  "lake-cumberland": 230,
-  "mammoth-cave": 78,
-  "new-river": 400,
-  nashville: 450,
-  "hot-springs": 410,
-  "st-louis": 410,
-  "indiana-dunes": 310,
-  "home-return": 300,
+  "indiana-dunes": 300,
+  "st-louis": 300,
+  "hot-springs": 400,
+  nashville: 410,
+  "mammoth-cave": 100,
+  "lake-cumberland": 80,
+  "new-river": 300,
+  "home-return": 230,
 };
 
+/** Label anchors chosen so no label ever sits over its own or a neighbour's icon. */
 const LABEL_SIDE: Record<string, Waypoint["labelSide"]> = {
   home: "right",
-  "lake-cumberland": "right",
-  "mammoth-cave": "left",
-  "new-river": "right",
-  nashville: "left",
-  "hot-springs": "left",
-  "st-louis": "left",
   "indiana-dunes": "top",
-  "home-return": "right",
+  "st-louis": "left",
+  "hot-springs": "left",
+  nashville: "bottom",
+  "mammoth-cave": "left",
+  "lake-cumberland": "bottom",
+  "new-river": "right",
+  "home-return": "top",
 };
 
-export const WAYPOINTS: Waypoint[] = CITY_POINTS.map((c) => ({
-  id: c.id,
-  name: c.name,
-  region: c.region,
-  x: c.x,
-  y: c.y,
-  icon: ICONS[c.id],
-  milesFromPrev: MILES[c.id],
-  labelSide: LABEL_SIDE[c.id],
-}));
+const BY_ID = new Map(CITY_POINTS.map((c) => [c.id, c]));
 
-/** Build a smooth SVG path through waypoints using a Catmull-Rom → Bezier conversion. */
-export function buildRoutePath(points: { x: number; y: number }[], tension = 0.5): string {
+export const WAYPOINTS: Waypoint[] = TRIP_ORDER.map((id) => {
+  const c = BY_ID.get(id)!;
+  return {
+    id: c.id,
+    name: c.name,
+    region: c.region,
+    x: c.x,
+    y: c.y,
+    icon: ICONS[c.id],
+    milesFromPrev: MILES[c.id],
+    labelSide: LABEL_SIDE[c.id],
+  };
+});
+
+/**
+ * Build the route as a single, one-directional polyline: straight point-to-point
+ * segments in trip order. Corners get a small rounded fillet, which never
+ * overshoots a waypoint, so the line can't loop or cross itself.
+ */
+export function buildRoutePath(points: { x: number; y: number }[], radius = 14): string {
   if (points.length < 2) return "";
   const d: string[] = [`M ${points[0].x} ${points[0].y}`];
-  const p = points;
-  for (let i = 0; i < p.length - 1; i++) {
-    const p0 = p[i - 1] ?? p[i];
-    const p1 = p[i];
-    const p2 = p[i + 1];
-    const p3 = p[i + 2] ?? p2;
-    const c1x = p1.x + ((p2.x - p0.x) / 6) * tension * 2;
-    const c1y = p1.y + ((p2.y - p0.y) / 6) * tension * 2;
-    const c2x = p2.x - ((p3.x - p1.x) / 6) * tension * 2;
-    const c2y = p2.y - ((p3.y - p1.y) / 6) * tension * 2;
-    d.push(`C ${c1x} ${c1y}, ${c2x} ${c2y}, ${p2.x} ${p2.y}`);
+  const lerp = (a: { x: number; y: number }, b: { x: number; y: number }, r: number) => {
+    const dx = b.x - a.x;
+    const dy = b.y - a.y;
+    const len = Math.hypot(dx, dy) || 1;
+    const t = Math.min(r, len / 2) / len;
+    return { x: a.x + dx * t, y: a.y + dy * t };
+  };
+
+  for (let i = 1; i < points.length - 1; i++) {
+    const prev = points[i - 1];
+    const cur = points[i];
+    const next = points[i + 1];
+    const inPt = lerp(cur, prev, radius);
+    const outPt = lerp(cur, next, radius);
+    d.push(`L ${inPt.x} ${inPt.y}`);
+    d.push(`Q ${cur.x} ${cur.y}, ${outPt.x} ${outPt.y}`);
   }
+  const last = points[points.length - 1];
+  d.push(`L ${last.x} ${last.y}`);
   return d.join(" ");
 }
 
