@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   AnimatePresence,
   motion,
@@ -234,9 +234,15 @@ export function RoadTripAnimation({
   const [stage, setStage] = useState<Stage>("intro");
   const [visibleIndex, setVisibleIndex] = useState<number>(-1);
   const [titleVisible, setTitleVisible] = useState(true);
-  const [time, setTime] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [rvPos, setRvPos] = useState({ x: WAYPOINTS[0].x, y: WAYPOINTS[0].y, angle: 0 });
+
+  // Playhead + RV transform live in motion values so the per-frame loop never
+  // triggers a React re-render (critical for smoothness on mobile).
+  const timeMV = useMotionValue(0);
+  const rvX = useMotionValue(WAYPOINTS[0].x);
+  const rvY = useMotionValue(WAYPOINTS[0].y);
+  const rvAngle = useMotionValue(0);
+  const [rvSpinning, setRvSpinning] = useState(false);
 
   // ── measure the path once mounted ──────────────────────────────────────────
   useEffect(() => {
@@ -276,8 +282,15 @@ export function RoadTripAnimation({
     if (!path) return;
     const p = path.getPointAtLength(v);
     const ahead = path.getPointAtLength(Math.min(v + 1, totalLen || 1));
-    const angle = (Math.atan2(ahead.y - p.y, ahead.x - p.x) * 180) / Math.PI;
-    setRvPos({ x: p.x, y: p.y, angle });
+    rvX.set(p.x);
+    rvY.set(p.y);
+    rvAngle.set((Math.atan2(ahead.y - p.y, ahead.x - p.x) * 180) / Math.PI);
+  });
+
+  // Wheel spin is a boolean, so only flip React state when it actually changes.
+  useMotionValueEvent(rvMoving, "change", (v) => {
+    const next = v > 0.1;
+    setRvSpinning((prev) => (prev === next ? prev : next));
   });
 
   // Build a deterministic, scrub-friendly timeline.
@@ -334,7 +347,7 @@ export function RoadTripAnimation({
         next = duration;
         timeRef.current = next;
         applyAt(next);
-        setTime(next);
+        timeMV.set(next);
         setIsPlaying(false);
         if (!completedRef.current) {
           completedRef.current = true;
@@ -344,23 +357,23 @@ export function RoadTripAnimation({
       }
       timeRef.current = next;
       applyAt(next);
-      setTime(next);
+      timeMV.set(next);
       raf = requestAnimationFrame(tick);
     };
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
-  }, [isPlaying, timeline, duration, applyAt, onComplete]);
+  }, [isPlaying, timeline, duration, applyAt, onComplete, timeMV]);
 
   const handleTogglePlay = useCallback(() => {
     if (!timeline) return;
     if (timeRef.current >= duration - 0.001) {
       timeRef.current = 0;
-      setTime(0);
+      timeMV.set(0);
       applyAt(0);
       completedRef.current = false;
     }
     setIsPlaying((p) => !p);
-  }, [timeline, duration, applyAt]);
+  }, [timeline, duration, applyAt, timeMV]);
 
   const handleScrub = useCallback(
     (v: number) => {
@@ -368,21 +381,21 @@ export function RoadTripAnimation({
       setIsPlaying(false);
       const clamped = Math.max(0, Math.min(duration, v));
       timeRef.current = clamped;
-      setTime(clamped);
+      timeMV.set(clamped);
       applyAt(clamped);
       completedRef.current = clamped >= duration - 0.001;
     },
-    [timeline, duration, applyAt],
+    [timeline, duration, applyAt, timeMV],
   );
 
   const handleRestart = useCallback(() => {
     if (!timeline) return;
     timeRef.current = 0;
-    setTime(0);
+    timeMV.set(0);
     applyAt(0);
     completedRef.current = false;
     setIsPlaying(true);
-  }, [timeline, applyAt]);
+  }, [timeline, applyAt, timeMV]);
 
   // Camera transform string
   const cameraTransform = useTransform([camX, camY, camScale], (vals) => {
@@ -423,7 +436,10 @@ export function RoadTripAnimation({
       >
         {/* Drifting clouds live outside the camera transform */}
         <g>
-          {clouds.map((c, i) => (
+          {cloudLayer}
+        </g>
+        <g style={{ display: "none" }}>
+          {[].map((c: never, i: number) => (
             <motion.g
               key={i}
               initial={{ x: c.x, opacity: 0 }}
@@ -517,9 +533,9 @@ export function RoadTripAnimation({
 
           {/* RV sprite */}
           <motion.g style={{ opacity: rvOpacity }}>
-            <g style={{ transform: `translate(${rvPos.x}px, ${rvPos.y}px)` }}>
-              <RV angle={rvPos.angle} moving={rvMoving.get()} />
-            </g>
+            <motion.g style={{ x: rvX, y: rvY, rotate: rvAngle }}>
+              <RV spinning={rvSpinning} />
+            </motion.g>
           </motion.g>
         </motion.g>
       </svg>
@@ -651,7 +667,7 @@ export function RoadTripAnimation({
       {/* Playback controls */}
       {showControls && timeline && (
         <PlaybackControls
-          time={time}
+          time={timeMV}
           duration={duration}
           isPlaying={isPlaying}
           onToggle={handleTogglePlay}
@@ -670,7 +686,7 @@ function formatTime(sec: number): string {
   return `${m}:${r.toString().padStart(2, "0")}`;
 }
 
-function PlaybackControls({
+const PlaybackControls = memo(function PlaybackControls({
   time,
   duration,
   isPlaying,
@@ -678,7 +694,7 @@ function PlaybackControls({
   onScrub,
   onRestart,
 }: {
-  time: number;
+  time: ReturnType<typeof useMotionValue<number>>;
   duration: number;
   isPlaying: boolean;
   onToggle: () => void;
