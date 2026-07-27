@@ -7,8 +7,14 @@ import { memo, useEffect, useRef, useState } from "react";
  */
 export const FpsMeter = memo(function FpsMeter({
   active = true,
+  scene,
+  speed,
 }: {
   active?: boolean;
+  /** Current stage / destination label, e.g. "Driving → Moab". */
+  scene?: string;
+  /** Playback rate, or 0 when paused. */
+  speed?: number;
 }) {
   const [open, setOpen] = useState(true);
   const [stats, setStats] = useState({ fps: 0, avg: 0, worst: 0 });
@@ -85,6 +91,20 @@ export const FpsMeter = memo(function FpsMeter({
           <span className="hidden text-muted-foreground sm:inline">
             max {stats.worst.toFixed(0)} ms
           </span>
+          {(scene || speed !== undefined) && (
+            <span className="flex items-center gap-1.5 border-l border-border/70 pl-2 text-muted-foreground">
+              {scene && (
+                <span className="max-w-[92px] truncate sm:max-w-[160px]">
+                  {scene}
+                </span>
+              )}
+              {speed !== undefined && (
+                <span className="font-semibold text-foreground">
+                  {speed === 0 ? "paused" : `${speed}x`}
+                </span>
+              )}
+            </span>
+          )}
         </span>
       )}
     </button>

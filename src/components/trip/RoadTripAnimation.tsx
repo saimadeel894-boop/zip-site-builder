@@ -295,6 +295,31 @@ export function RoadTripAnimation({
     setRvSpinning((prev) => (prev === next ? prev : next));
   });
 
+  // Human-readable scene label for the perf HUD.
+  const sceneLabel = useMemo(() => {
+    const dest = WAYPOINTS[visibleIndex]?.name;
+    switch (stage) {
+      case "intro":
+        return "Intro";
+      case "reveal":
+        return "Map reveal";
+      case "zoomHome":
+        return "Zoom to start";
+      case "driving": {
+        const next = WAYPOINTS[visibleIndex + 1]?.name;
+        return next ? `Driving → ${next}` : "Driving";
+      }
+      case "arrived":
+        return dest ? `Arrived · ${dest}` : "Arrived";
+      case "outro":
+        return "Outro";
+      case "done":
+        return "Complete";
+      default:
+        return stage;
+    }
+  }, [stage, visibleIndex]);
+
   // Build a deterministic, scrub-friendly timeline.
   const timeline = useMemo<Timeline | null>(
     () => (segmentLens.length ? buildTimeline(segmentLens) : null),
@@ -667,7 +692,13 @@ export function RoadTripAnimation({
       )}
 
 
-      {!chromeless && <FpsMeter active={showFps} />}
+      {!chromeless && (
+        <FpsMeter
+          active={showFps}
+          scene={sceneLabel}
+          speed={isPlaying ? 1 : 0}
+        />
+      )}
 
       {/* Playback controls */}
       {showControls && timeline && (
