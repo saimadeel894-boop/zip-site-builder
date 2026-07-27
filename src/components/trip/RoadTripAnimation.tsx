@@ -622,13 +622,14 @@ export function RoadTripAnimation({
       {/* Top-left brand chip */}
       {!chromeless && (
         <div
-          className="pointer-events-none absolute left-6 top-6 flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.35em] text-muted-foreground"
+          className="pointer-events-none absolute left-3 top-3 flex max-w-[45%] items-center gap-1.5 truncate text-[8px] font-semibold uppercase tracking-[0.2em] text-muted-foreground sm:left-6 sm:top-6 sm:max-w-none sm:gap-2 sm:text-[10px] sm:tracking-[0.35em]"
           style={{ zIndex: 30 }}
         >
-          <span className="h-1.5 w-1.5 rounded-full bg-primary" />
-          Summer Road Trip · 2026
+          <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-primary" />
+          <span className="truncate">Summer Road Trip · 2026</span>
         </div>
       )}
+
 
       {/* Fixed UI layer — completely separate from the map/camera layer.
           Never scales, pans, or reflows with the map. */}
