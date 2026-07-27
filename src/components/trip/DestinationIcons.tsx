@@ -65,7 +65,7 @@ export function DestinationIcon({ icon, size = 22 }: Props) {
       transform={`scale(${k})`}
       fill="none"
       stroke="currentColor"
-      strokeWidth={1.7 / k / (1 / k) === 0 ? 1.7 : 1.7}
+      strokeWidth={1.7}
       strokeLinecap="round"
       strokeLinejoin="round"
     >
