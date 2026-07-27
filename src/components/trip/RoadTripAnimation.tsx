@@ -551,7 +551,7 @@ export function RoadTripAnimation({
                 className="mt-2 leading-[0.9] tracking-tight text-balance text-[color:var(--deep)] sm:mt-4"
                 style={{ fontFamily: "var(--font-display)", fontWeight: 400 }}
               >
-                <span className="block text-[2rem] xs:text-4xl sm:text-7xl md:text-[7.5rem]">
+                <span className="block text-[2rem] sm:text-7xl md:text-[7.5rem]">
                   Summer Road Trip
                 </span>
                 <span
@@ -598,7 +598,7 @@ export function RoadTripAnimation({
                 className="mt-2 leading-[0.9] tracking-tight text-balance text-[color:var(--deep)] sm:mt-4"
                 style={{ fontFamily: "var(--font-display)", fontWeight: 400 }}
               >
-                <span className="block text-[2rem] xs:text-4xl sm:text-7xl md:text-[6.5rem]">
+                <span className="block text-[2rem] sm:text-7xl md:text-[6.5rem]">
                   Summer Road Trip
                 </span>
                 <span className="mt-1 block text-2xl italic text-primary sm:mt-2 sm:text-6xl md:text-7xl">
