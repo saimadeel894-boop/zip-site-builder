@@ -752,8 +752,23 @@ const PlaybackControls = memo(function PlaybackControls({
         <span className="sm:hidden">{formatTime(displayTime)}</span>
         <span className="hidden sm:inline">{formatTime(duration)}</span>
       </span>
+      <button
+        type="button"
+        onClick={onToggleFps}
+        aria-label="Toggle FPS meter"
+        aria-pressed={showFps}
+        title="Toggle FPS meter"
+        className={`flex h-7 shrink-0 items-center justify-center rounded-full border px-2 font-mono text-[9px] font-semibold uppercase tracking-wider transition sm:h-8 sm:text-[10px] ${
+          showFps
+            ? "border-transparent bg-[color:var(--deep)] text-white"
+            : "border-border text-muted-foreground hover:bg-slate-100"
+        }`}
+      >
+        FPS
+      </button>
 
     </div>
+
 
   );
 });
