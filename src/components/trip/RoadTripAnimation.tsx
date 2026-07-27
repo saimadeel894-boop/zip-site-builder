@@ -686,12 +686,12 @@ function PlaybackControls({
   onRestart: () => void;
 }) {
   return (
-    <div className="pointer-events-auto absolute bottom-6 left-1/2 z-20 flex w-[min(560px,calc(100%-3rem))] -translate-x-1/2 items-center gap-3 rounded-full border border-border/60 bg-white/90 px-4 py-2 shadow-[0_10px_30px_-12px_rgba(15,23,42,0.35)] backdrop-blur">
+    <div className="pointer-events-auto absolute bottom-3 left-1/2 z-20 flex w-[min(560px,calc(100%-1.5rem))] -translate-x-1/2 items-center gap-2 rounded-full border border-border/60 bg-white/90 px-3 py-1.5 shadow-[0_10px_30px_-12px_rgba(15,23,42,0.35)] backdrop-blur sm:bottom-6 sm:w-[min(560px,calc(100%-3rem))] sm:gap-3 sm:px-4 sm:py-2">
       <button
         type="button"
         onClick={onToggle}
         aria-label={isPlaying ? "Pause" : "Play"}
-        className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[color:var(--deep)] text-white transition hover:opacity-90"
+        className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[color:var(--deep)] text-white transition hover:opacity-90 sm:h-8 sm:w-8"
       >
         {isPlaying ? <Pause size={14} /> : <Play size={14} className="translate-x-[1px]" />}
       </button>
@@ -699,11 +699,11 @@ function PlaybackControls({
         type="button"
         onClick={onRestart}
         aria-label="Restart"
-        className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-border text-[color:var(--deep)] transition hover:bg-slate-100"
+        className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-border text-[color:var(--deep)] transition hover:bg-slate-100 sm:h-8 sm:w-8"
       >
         <RotateCcw size={13} />
       </button>
-      <span className="w-10 shrink-0 text-right text-[10px] font-semibold tabular-nums tracking-wider text-[color:var(--deep)]">
+      <span className="hidden w-10 shrink-0 text-right text-[10px] font-semibold tabular-nums tracking-wider text-[color:var(--deep)] sm:block">
         {formatTime(time)}
       </span>
       <input
@@ -714,7 +714,7 @@ function PlaybackControls({
         value={Math.min(time, duration)}
         onChange={(e) => onScrub(parseFloat(e.target.value))}
         aria-label="Scrub timeline"
-        className="h-1 w-full flex-1 cursor-pointer appearance-none rounded-full bg-slate-200 accent-[color:var(--primary)]"
+        className="h-1 w-full min-w-0 flex-1 cursor-pointer appearance-none rounded-full bg-slate-200 accent-[color:var(--primary)]"
         style={{
           background: `linear-gradient(to right, var(--primary) 0%, var(--primary) ${
             duration > 0 ? (time / duration) * 100 : 0
@@ -723,10 +723,12 @@ function PlaybackControls({
           }%, rgb(226,232,240) 100%)`,
         }}
       />
-      <span className="w-10 shrink-0 text-[10px] font-semibold tabular-nums tracking-wider text-muted-foreground">
-        {formatTime(duration)}
+      <span className="w-9 shrink-0 text-[9px] font-semibold tabular-nums tracking-wider text-muted-foreground sm:w-10 sm:text-[10px]">
+        {formatTime(time)}
+        <span className="hidden sm:inline"> </span>
       </span>
     </div>
+
   );
 }
 
