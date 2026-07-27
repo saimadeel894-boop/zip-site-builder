@@ -1,4 +1,5 @@
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { FpsMeter } from "./FpsMeter";
 import {
   AnimatePresence,
   motion,
@@ -235,6 +236,7 @@ export function RoadTripAnimation({
   const [visibleIndex, setVisibleIndex] = useState<number>(-1);
   const [titleVisible, setTitleVisible] = useState(true);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [showFps, setShowFps] = useState(false);
 
   // Playhead + RV transform live in motion values so the per-frame loop never
   // triggers a React re-render (critical for smoothness on mobile).
@@ -665,6 +667,8 @@ export function RoadTripAnimation({
       )}
 
 
+      {!chromeless && <FpsMeter active={showFps} />}
+
       {/* Playback controls */}
       {showControls && timeline && (
         <PlaybackControls
@@ -674,6 +678,8 @@ export function RoadTripAnimation({
           onToggle={handleTogglePlay}
           onScrub={handleScrub}
           onRestart={handleRestart}
+          showFps={showFps}
+          onToggleFps={() => setShowFps((v) => !v)}
         />
       )}
     </div>
@@ -694,6 +700,8 @@ const PlaybackControls = memo(function PlaybackControls({
   onToggle,
   onScrub,
   onRestart,
+  showFps,
+  onToggleFps,
 }: {
   time: ReturnType<typeof useMotionValue<number>>;
   duration: number;
@@ -701,6 +709,8 @@ const PlaybackControls = memo(function PlaybackControls({
   onToggle: () => void;
   onScrub: (v: number) => void;
   onRestart: () => void;
+  showFps: boolean;
+  onToggleFps: () => void;
 }) {
   // Re-render the scrubber at most ~10x/second (0.1s steps) instead of every
   // animation frame; the playhead itself stays in the motion value.
@@ -752,8 +762,23 @@ const PlaybackControls = memo(function PlaybackControls({
         <span className="sm:hidden">{formatTime(displayTime)}</span>
         <span className="hidden sm:inline">{formatTime(duration)}</span>
       </span>
+      <button
+        type="button"
+        onClick={onToggleFps}
+        aria-label="Toggle FPS meter"
+        aria-pressed={showFps}
+        title="Toggle FPS meter"
+        className={`flex h-7 shrink-0 items-center justify-center rounded-full border px-2 font-mono text-[9px] font-semibold uppercase tracking-wider transition sm:h-8 sm:text-[10px] ${
+          showFps
+            ? "border-transparent bg-[color:var(--deep)] text-white"
+            : "border-border text-muted-foreground hover:bg-slate-100"
+        }`}
+      >
+        FPS
+      </button>
 
     </div>
+
 
   );
 });
