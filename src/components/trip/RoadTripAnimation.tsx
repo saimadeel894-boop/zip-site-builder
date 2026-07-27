@@ -619,15 +619,23 @@ export function RoadTripAnimation({
 
       {/* Top-left brand chip */}
       {!chromeless && (
-        <div className="pointer-events-none absolute left-6 top-6 flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.35em] text-muted-foreground">
+        <div
+          className="pointer-events-none absolute left-6 top-6 flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.35em] text-muted-foreground"
+          style={{ zIndex: 30 }}
+        >
           <span className="h-1.5 w-1.5 rounded-full bg-primary" />
           Summer Road Trip · 2026
         </div>
       )}
 
-      {/* Fixed UI layer: separate from the SVG map/camera transform. */}
-      {!chromeless && stage !== "intro" && stage !== "reveal" && (
-        <div data-mileage-layer="fixed-ui" className="pointer-events-none absolute inset-0 z-50">
+      {/* Fixed UI layer — completely separate from the map/camera layer.
+          Never scales, pans, or reflows with the map. */}
+      {!chromeless && stage !== "intro" && (
+        <div
+          data-mileage-layer="fixed-ui"
+          className="pointer-events-none absolute inset-0"
+          style={{ zIndex: 100 }}
+        >
           <ProgressReadout
             segmentLens={segmentLens}
             pathLen={pathLen}
@@ -635,6 +643,7 @@ export function RoadTripAnimation({
           />
         </div>
       )}
+
 
       {/* Playback controls */}
       {showControls && timeline && (
