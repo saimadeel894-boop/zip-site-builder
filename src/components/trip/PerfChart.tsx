@@ -1,6 +1,7 @@
 import { memo, useMemo, useState } from "react";
 import { X } from "lucide-react";
 import type { PerfSample } from "./perf-types";
+import { PerfSummary } from "./PerfSummary";
 
 /**
  * Compact SVG chart of a recorded performance session.
