@@ -1,9 +1,49 @@
-import { memo, useEffect, useRef, useState } from "react";
+import { memo, useCallback, useEffect, useRef, useState } from "react";
+import { Circle, Download, Square } from "lucide-react";
+
+type Sample = {
+  /** ms since recording started */
+  t: number;
+  fps: number;
+  avgMs: number;
+  worstMs: number;
+  frames: number;
+  scene: string;
+  speed: number;
+  /** 1 when the scene changed at this sample */
+  transition: 0 | 1;
+};
+
+function toCsv(rows: Sample[]): string {
+  const head = [
+    "elapsed_s",
+    "fps",
+    "avg_frame_ms",
+    "worst_frame_ms",
+    "frames",
+    "scene",
+    "speed",
+    "scene_transition",
+  ].join(",");
+  const body = rows.map((r) =>
+    [
+      (r.t / 1000).toFixed(3),
+      r.fps,
+      r.avgMs.toFixed(2),
+      r.worstMs.toFixed(2),
+      r.frames,
+      `"${r.scene.replace(/"/g, '""')}"`,
+      r.speed,
+      r.transition,
+    ].join(","),
+  );
+  return [head, ...body].join("\n");
+}
 
 /**
- * Lightweight FPS / frame-time HUD.
+ * Lightweight FPS / frame-time HUD with an optional recording mode.
  * Runs its own rAF loop and only re-renders ~4x per second.
- * Tap the badge to collapse it down to a dot.
+ * Tap the readout to collapse it down to a dot.
  */
 export const FpsMeter = memo(function FpsMeter({
   active = true,
@@ -18,7 +58,17 @@ export const FpsMeter = memo(function FpsMeter({
 }) {
   const [open, setOpen] = useState(true);
   const [stats, setStats] = useState({ fps: 0, avg: 0, worst: 0 });
-  const fpsRef = useRef<HTMLSpanElement>(null);
+  const [recording, setRecording] = useState(false);
+  const [sampleCount, setSampleCount] = useState(0);
+
+  // Latest scene/speed without restarting the rAF loop.
+  const metaRef = useRef({ scene: scene ?? "", speed: speed ?? 0 });
+  metaRef.current = { scene: scene ?? "", speed: speed ?? 0 };
+
+  const samplesRef = useRef<Sample[]>([]);
+  const recordingRef = useRef(false);
+  const startRef = useRef(0);
+  const lastSceneRef = useRef("");
 
   useEffect(() => {
     if (!active) return;
@@ -38,11 +88,27 @@ export const FpsMeter = memo(function FpsMeter({
       if (dt > worst) worst = dt;
 
       if (acc >= 250) {
-        setStats({
-          fps: Math.round((frames * 1000) / acc),
-          avg: sum / frames,
-          worst,
-        });
+        const fps = Math.round((frames * 1000) / acc);
+        const avg = sum / frames;
+        setStats({ fps, avg, worst });
+
+        if (recordingRef.current) {
+          const { scene: sc, speed: sp } = metaRef.current;
+          const transition = sc !== lastSceneRef.current ? 1 : 0;
+          lastSceneRef.current = sc;
+          samplesRef.current.push({
+            t: now - startRef.current,
+            fps,
+            avgMs: avg,
+            worstMs: worst,
+            frames,
+            scene: sc,
+            speed: sp,
+            transition,
+          });
+          setSampleCount(samplesRef.current.length);
+        }
+
         acc = 0;
         frames = 0;
         sum = 0;
@@ -54,6 +120,32 @@ export const FpsMeter = memo(function FpsMeter({
     return () => cancelAnimationFrame(raf);
   }, [active]);
 
+  const toggleRecording = useCallback(() => {
+    setRecording((r) => {
+      const next = !r;
+      if (next) {
+        samplesRef.current = [];
+        setSampleCount(0);
+        startRef.current = performance.now();
+        lastSceneRef.current = "";
+      }
+      recordingRef.current = next;
+      return next;
+    });
+  }, []);
+
+  const download = useCallback(() => {
+    const rows = samplesRef.current;
+    if (!rows.length) return;
+    const blob = new Blob([toCsv(rows)], { type: "text/csv;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `perf-log-${new Date().toISOString().replace(/[:.]/g, "-")}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  }, []);
+
   if (!active) return null;
 
   const tone =
@@ -64,49 +156,80 @@ export const FpsMeter = memo(function FpsMeter({
         : "text-destructive";
 
   return (
-    <button
-      type="button"
-      onClick={() => setOpen((o) => !o)}
-      aria-label="Toggle FPS meter"
-      className="absolute bottom-3 left-3 flex items-center gap-2 rounded-full border border-border/70 bg-background/90 px-2.5 py-1 font-mono text-[10px] leading-none shadow-sm backdrop-blur sm:bottom-6 sm:left-6 sm:text-[11px]"
+    <div
+      className="pointer-events-auto absolute bottom-3 left-3 flex items-center gap-2 rounded-full border border-border/70 bg-background/90 px-2.5 py-1 font-mono text-[10px] leading-none shadow-sm backdrop-blur sm:bottom-6 sm:left-6 sm:text-[11px]"
       style={{ zIndex: 110 }}
     >
-      <span
-        className={`h-1.5 w-1.5 shrink-0 rounded-full ${
-          stats.fps >= 50
-            ? "bg-emerald-500"
-            : stats.fps >= 30
-              ? "bg-amber-500"
-              : "bg-destructive"
-        }`}
-      />
-      {open && (
-        <span className="flex items-center gap-2 whitespace-nowrap">
-          <span ref={fpsRef} className={`font-semibold ${tone}`}>
-            {stats.fps} fps
-          </span>
-          <span className="text-muted-foreground">
-            {stats.avg.toFixed(1)} ms
-          </span>
-          <span className="hidden text-muted-foreground sm:inline">
-            max {stats.worst.toFixed(0)} ms
-          </span>
-          {(scene || speed !== undefined) && (
-            <span className="flex items-center gap-1.5 border-l border-border/70 pl-2 text-muted-foreground">
-              {scene && (
-                <span className="max-w-[92px] truncate sm:max-w-[160px]">
-                  {scene}
-                </span>
-              )}
-              {speed !== undefined && (
-                <span className="font-semibold text-foreground">
-                  {speed === 0 ? "paused" : `${speed}x`}
-                </span>
-              )}
+      <button
+        type="button"
+        onClick={() => setOpen((o) => !o)}
+        aria-label="Toggle FPS readout"
+        className="flex items-center gap-2"
+      >
+        <span
+          className={`h-1.5 w-1.5 shrink-0 rounded-full ${
+            stats.fps >= 50
+              ? "bg-emerald-500"
+              : stats.fps >= 30
+                ? "bg-amber-500"
+                : "bg-destructive"
+          }`}
+        />
+        {open && (
+          <span className="flex items-center gap-2 whitespace-nowrap">
+            <span className={`font-semibold ${tone}`}>{stats.fps} fps</span>
+            <span className="text-muted-foreground">
+              {stats.avg.toFixed(1)} ms
             </span>
-          )}
+            <span className="hidden text-muted-foreground sm:inline">
+              max {stats.worst.toFixed(0)} ms
+            </span>
+            {(scene || speed !== undefined) && (
+              <span className="flex items-center gap-1.5 border-l border-border/70 pl-2 text-muted-foreground">
+                {scene && (
+                  <span className="max-w-[92px] truncate sm:max-w-[160px]">
+                    {scene}
+                  </span>
+                )}
+                {speed !== undefined && (
+                  <span className="font-semibold text-foreground">
+                    {speed === 0 ? "paused" : `${speed}x`}
+                  </span>
+                )}
+              </span>
+            )}
+          </span>
+        )}
+      </button>
+
+      {open && (
+        <span className="flex items-center gap-1 border-l border-border/70 pl-2">
+          <button
+            type="button"
+            onClick={toggleRecording}
+            aria-label={recording ? "Stop performance log" : "Record performance log"}
+            title={recording ? "Stop recording" : "Record performance log"}
+            className={`flex h-5 items-center gap-1 rounded-full px-1.5 transition ${
+              recording
+                ? "bg-destructive text-destructive-foreground"
+                : "text-muted-foreground hover:bg-muted"
+            }`}
+          >
+            {recording ? <Square size={9} fill="currentColor" /> : <Circle size={9} />}
+            <span className="tabular-nums">{sampleCount}</span>
+          </button>
+          <button
+            type="button"
+            onClick={download}
+            disabled={!sampleCount}
+            aria-label="Download performance CSV"
+            title="Download CSV"
+            className="flex h-5 w-5 items-center justify-center rounded-full text-muted-foreground transition hover:bg-muted disabled:opacity-30"
+          >
+            <Download size={10} />
+          </button>
         </span>
       )}
-    </button>
+    </div>
   );
 });
