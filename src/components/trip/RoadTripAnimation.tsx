@@ -405,16 +405,33 @@ export function RoadTripAnimation({
     return `translate(${tx} ${ty}) scale(${s})`;
   });
 
-  const clouds = useMemo(
-    () => [
-      { x: 120, y: 90, s: 1, delay: 0 },
-      { x: 760, y: 60, s: 1.4, delay: 4 },
-      { x: 420, y: 40, s: 0.8, delay: 8 },
-      { x: 640, y: 520, s: 1.1, delay: 2 },
-      { x: 220, y: 540, s: 0.9, delay: 6 },
-    ],
+  // Static decorative layer — built once so per-frame updates never touch it.
+  const cloudLayer = useMemo(
+    () =>
+      [
+        { x: 120, y: 90, s: 1, delay: 0 },
+        { x: 760, y: 60, s: 1.4, delay: 4 },
+        { x: 420, y: 40, s: 0.8, delay: 8 },
+        { x: 640, y: 520, s: 1.1, delay: 2 },
+        { x: 220, y: 540, s: 0.9, delay: 6 },
+      ].map((c, i) => (
+        <motion.g
+          key={i}
+          initial={{ x: c.x, opacity: 0 }}
+          animate={{ x: [c.x - 40, c.x + 40, c.x - 40], opacity: 0.55 }}
+          transition={{
+            x: { duration: 18 + i * 3, repeat: Infinity, ease: "easeInOut" },
+            opacity: { duration: 2, delay: c.delay * 0.1 },
+          }}
+        >
+          <Cloud x={0} y={c.y} scale={c.s} />
+        </motion.g>
+      )),
     [],
   );
+
+  const mapLayer = useMemo(() => <UsaMap />, []);
+
 
   return (
     <div className="relative isolate h-full w-full overflow-hidden bg-background">
