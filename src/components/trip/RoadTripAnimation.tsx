@@ -532,7 +532,7 @@ export function RoadTripAnimation({
 
           {/* RV sprite — above the route, below destination labels/icons so it never
               covers the first words of location names or the icon badges. */}
-          <motion.g style={{ opacity: rvOpacity }}>
+          <motion.g data-map-rv style={{ opacity: rvOpacity }}>
             <motion.g style={{ x: rvX, y: rvY, rotate: rvAngle }}>
               <RV spinning={rvSpinning} />
             </motion.g>
