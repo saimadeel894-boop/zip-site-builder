@@ -530,8 +530,17 @@ export function RoadTripAnimation({
             }}
           />
 
-          {/* Waypoint pins — full detail only for the current stop; earlier
-              stops collapse to compact markers so labels never overlap. */}
+          {/* RV sprite — above the route, below destination labels/icons so it never
+              covers the first words of location names or the icon badges. */}
+          <motion.g data-map-rv style={{ opacity: rvOpacity }}>
+            <motion.g style={{ x: rvX, y: rvY, rotate: rvAngle }}>
+              <RV spinning={rvSpinning} />
+            </motion.g>
+          </motion.g>
+
+          {/* Waypoint pins — rendered after the RV so labels/icons stay on top.
+              Full detail only for the current stop; earlier stops collapse to
+              compact markers so labels never overlap. */}
           {WAYPOINTS.map((w, i) => {
             const reached = i <= visibleIndex && stage !== "outro" && stage !== "done";
             const isActive = i === visibleIndex && stage !== "outro" && stage !== "done";
@@ -561,13 +570,6 @@ export function RoadTripAnimation({
                 </g>
               </g>
             ))}
-
-          {/* RV sprite */}
-          <motion.g style={{ opacity: rvOpacity }}>
-            <motion.g style={{ x: rvX, y: rvY, rotate: rvAngle }}>
-              <RV spinning={rvSpinning} />
-            </motion.g>
-          </motion.g>
         </motion.g>
       </svg>
 
