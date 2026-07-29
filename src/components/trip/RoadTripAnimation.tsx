@@ -285,8 +285,10 @@ export function RoadTripAnimation({
   useMotionValueEvent(pathLen, "change", (v) => {
     const path = pathRef.current;
     if (!path) return;
-    const p = path.getPointAtLength(v);
-    const ahead = path.getPointAtLength(Math.min(v + 1, totalLen || 1));
+    // Keep the RV's nose (x=16) at the tip of the path, so its center is 15px behind
+    const centerDist = Math.max(0, v - 15);
+    const p = path.getPointAtLength(centerDist);
+    const ahead = path.getPointAtLength(Math.min(centerDist + 1, totalLen || 1));
     rvX.set(p.x);
     rvY.set(p.y);
     rvAngle.set((Math.atan2(ahead.y - p.y, ahead.x - p.x) * 180) / Math.PI);
