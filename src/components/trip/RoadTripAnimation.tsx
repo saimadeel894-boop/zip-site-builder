@@ -556,6 +556,16 @@ export function RoadTripAnimation({
             if (i !== highestIndex) return null;
 
             const isActive = highestIndex === visibleIndex && stage !== "outro" && stage !== "done";
+            
+            // If this is a compact pin (not active) but it's physically very close to the active pin,
+            // hide it to prevent visual clutter ("duplicate circular shapes" sitting beside the main pin).
+            if (!isActive && visibleIndex >= 0 && visibleIndex < WAYPOINTS.length) {
+              const activeW = WAYPOINTS[visibleIndex];
+              if (Math.hypot(w.x - activeW.x, w.y - activeW.y) < 30) {
+                return null;
+              }
+            }
+            
             return (
               <Pin
                 key={`${w.id}-${i}`}

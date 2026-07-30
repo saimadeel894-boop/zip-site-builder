@@ -102,17 +102,25 @@ export function buildRoutePath(points: { x: number; y: number }[]): string {
   if (points.length < 2) return "";
   let d = `M ${points[0].x} ${points[0].y}`;
   
-  const tension = 0.2;
   for (let i = 0; i < points.length - 1; i++) {
     const p0 = i > 0 ? points[i - 1] : points[i];
     const p1 = points[i];
     const p2 = points[i + 1];
     const p3 = i < points.length - 2 ? points[i + 2] : points[i + 1];
     
-    const cp1x = p1.x + (p2.x - p0.x) * tension;
-    const cp1y = p1.y + (p2.y - p0.y) * tension;
-    const cp2x = p2.x - (p3.x - p1.x) * tension;
-    const cp2y = p2.y - (p3.y - p1.y) * tension;
+    const d01 = Math.hypot(p1.x - p0.x, p1.y - p0.y) || 1;
+    const d12 = Math.hypot(p2.x - p1.x, p2.y - p1.y) || 1;
+    const d23 = Math.hypot(p3.x - p2.x, p3.y - p2.y) || 1;
+    
+    // Scale tangents by the distance of the segment being drawn (d12).
+    // This centripetal-like scaling prevents overshooting and loop-backs on tight corners.
+    const t1 = 0.25 * Math.min(d12 / (d01 + d12), 0.5);
+    const t2 = 0.25 * Math.min(d12 / (d12 + d23), 0.5);
+    
+    const cp1x = p1.x + (p2.x - p0.x) * t1;
+    const cp1y = p1.y + (p2.y - p0.y) * t1;
+    const cp2x = p2.x - (p3.x - p1.x) * t2;
+    const cp2y = p2.y - (p3.y - p1.y) * t2;
     
     d += ` C ${cp1x} ${cp1y}, ${cp2x} ${cp2y}, ${p2.x} ${p2.y}`;
   }
