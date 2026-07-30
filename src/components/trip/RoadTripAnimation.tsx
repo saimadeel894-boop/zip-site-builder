@@ -19,7 +19,7 @@ const VIEW_W = 975;
 const VIEW_H = 610;
 // Base zoom so the map fills ~85-90% of the frame instead of the full viewBox.
 // Continental-US center in the 975x610 viewBox (ignores the AK/HI inset corner).
-const MAP_CX = 495;
+const MAP_CX = 475;
 const MAP_CY = 268;
 const BASE_SCALE = 1.32;
 
@@ -634,7 +634,7 @@ export function RoadTripAnimation({
                 transition={{ delay: 0.7, duration: 0.8 }}
                 className="mt-2 hidden text-[8px] font-semibold uppercase tracking-[0.25em] text-muted-foreground sm:mt-6 sm:block sm:text-sm sm:tracking-[0.4em]"
               >
-                {WAYPOINTS.length - 1} Stops · {TOTAL_MILES.toLocaleString()} Miles · One RV
+                {WAYPOINTS.length} Stops · {TOTAL_MILES.toLocaleString()} Miles · One RV
               </motion.p>
             </div>
 
@@ -650,7 +650,7 @@ export function RoadTripAnimation({
             transition={{ duration: 1.2, ease: [0.65, 0, 0.35, 1] }}
             className="pointer-events-none absolute inset-0 flex items-center justify-center px-4 pb-14 pt-12 sm:p-0"
           >
-            <div className="w-full max-w-full text-center">
+            <div className="w-full max-w-fit mx-auto text-center bg-white/90 backdrop-blur-md rounded-[2.5rem] p-10 sm:p-14 shadow-2xl border border-white/60">
               <motion.p
                 initial={{ opacity: 0, letterSpacing: "0.2em" }}
                 animate={{ opacity: 1, letterSpacing: "0.35em" }}
@@ -679,7 +679,7 @@ export function RoadTripAnimation({
                 transition={{ delay: 0.6, duration: 0.9 }}
                 className="mt-2 hidden text-[8px] font-semibold uppercase tracking-[0.25em] text-muted-foreground sm:mt-6 sm:block sm:text-sm sm:tracking-[0.4em]"
               >
-                {TOTAL_MILES.toLocaleString()} Miles · {WAYPOINTS.length - 1} Stops
+                {TOTAL_MILES.toLocaleString()} Miles · {WAYPOINTS.length} Stops
               </motion.p>
             </div>
 
