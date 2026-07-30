@@ -544,9 +544,18 @@ export function RoadTripAnimation({
               Full detail only for the current stop; earlier stops collapse to
               compact markers so labels never overlap. */}
           {WAYPOINTS.map((w, i) => {
-            const reached = i <= visibleIndex && stage !== "outro" && stage !== "done";
-            const isActive = i === visibleIndex && stage !== "outro" && stage !== "done";
-            if (!reached) return null;
+            // Find all indices of WAYPOINTS that share this exact location and are currently reached
+            const activeForLocation = WAYPOINTS.map((wp, idx) => 
+              wp.x === w.x && wp.y === w.y && idx <= visibleIndex && stage !== "outro" && stage !== "done" ? idx : -1
+            ).filter(idx => idx !== -1);
+            
+            if (activeForLocation.length === 0) return null;
+            
+            // Only render ONE pin per location, using the most recently reached state
+            const highestIndex = Math.max(...activeForLocation);
+            if (i !== highestIndex) return null;
+
+            const isActive = highestIndex === visibleIndex && stage !== "outro" && stage !== "done";
             return (
               <Pin
                 key={`${w.id}-${i}`}
@@ -559,19 +568,27 @@ export function RoadTripAnimation({
 
           {/* Compact pins for outro summary */}
           {(stage === "outro" || stage === "done") &&
-            WAYPOINTS.map((w, i) => (
-              <g key={`sum-${i}`} style={{ transform: `translate(${w.x}px, ${w.y}px)` }}>
-                <circle r={9} fill="#fff" stroke="var(--pin)" strokeWidth={1.5} />
-                <g
-                  style={{
-                    transform: "translate(-6px, -6px)",
-                    color: "var(--deep)",
-                  }}
-                >
-                  <DestinationIcon icon={w.icon} size={12} />
+            WAYPOINTS.filter((w, index, self) => 
+              index === self.findIndex((t) => t.x === w.x && t.y === w.y)
+            ).map((w, i) => {
+              // Development check to ensure one element per destination
+              if (process.env.NODE_ENV === "development") {
+                 console.log(`[Summary] Rendering 1 icon for destination: ${w.name}`);
+              }
+              return (
+                <g key={`sum-${w.id}-${i}`} style={{ transform: `translate(${w.x}px, ${w.y}px)` }}>
+                  <circle r={9} fill="#fff" stroke="var(--pin)" strokeWidth={1.5} />
+                  <g
+                    style={{
+                      transform: "translate(-6px, -6px)",
+                      color: "var(--deep)",
+                    }}
+                  >
+                    <DestinationIcon icon={w.icon} size={12} />
+                  </g>
                 </g>
-              </g>
-            ))}
+              );
+            })}
         </motion.g>
       </svg>
 
