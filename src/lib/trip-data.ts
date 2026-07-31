@@ -43,9 +43,9 @@ const ICONS: Record<string, IconKey> = {
  */
 const TRIP_ORDER = [
   "home",
-  "new-river",
   "lake-cumberland",
   "mammoth-cave",
+  "new-river",
   "nashville",
   "hot-springs",
   "st-louis",
@@ -55,10 +55,10 @@ const TRIP_ORDER = [
 
 const MILES: Record<string, number> = {
   home: 0,
-  "new-river": 450,
-  "lake-cumberland": 368,
+  "lake-cumberland": 210,
   "mammoth-cave": 110,
-  nashville: 120,
+  "new-river": 330,
+  nashville: 398,
   "hot-springs": 440,
   "st-louis": 460,
   "indiana-dunes": 310,
