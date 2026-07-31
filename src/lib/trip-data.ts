@@ -43,26 +43,26 @@ const ICONS: Record<string, IconKey> = {
  */
 const TRIP_ORDER = [
   "home",
-  "indiana-dunes",
-  "st-louis",
-  "hot-springs",
-  "nashville",
-  "mammoth-cave",
-  "lake-cumberland",
   "new-river",
+  "lake-cumberland",
+  "mammoth-cave",
+  "nashville",
+  "hot-springs",
+  "st-louis",
+  "indiana-dunes",
   "home-return",
 ] as const;
 
 const MILES: Record<string, number> = {
   home: 0,
-  "indiana-dunes": 330,
-  "st-louis": 310,
-  "hot-springs": 460,
-  nashville: 440,
-  "mammoth-cave": 120,
-  "lake-cumberland": 110,
-  "new-river": 368,
-  "home-return": 450,
+  "new-river": 450,
+  "lake-cumberland": 368,
+  "mammoth-cave": 110,
+  nashville: 120,
+  "hot-springs": 440,
+  "st-louis": 460,
+  "indiana-dunes": 310,
+  "home-return": 330,
 };
 
 /** Label anchors chosen so no label ever sits over its own or a neighbour's icon. */
