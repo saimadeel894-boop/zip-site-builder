@@ -100,7 +100,7 @@ export function Pin({ waypoint, visible, compact = false }: Props) {
               strokeWidth={0.9}
             />
             <text
-              x={12}
+              x={16}
               y={-2}
               fontSize={11.5}
               fontWeight={700}
@@ -111,7 +111,7 @@ export function Pin({ waypoint, visible, compact = false }: Props) {
             </text>
             {waypoint.region && (
               <text
-                x={12}
+                x={16}
                 y={12}
                 fontSize={8.5}
                 fontWeight={600}
