@@ -16,7 +16,11 @@ const ICON_OFFSET = 34;
 // Icon badge outer radius (matches the visual ring below).
 const ICON_RADIUS = 17;
 // Minimum breathing room between the icon badge and the label rect (>= 16px).
-const LABEL_GAP = 28;
+const LABEL_GAP = 38;
+// Vertical nudge so labels sit clearly above/below the RV body, not on it.
+const SIDE_V_OFFSET = -12;   // left/right labels move up
+const TOP_V_OFFSET = -10;    // top labels move higher
+const BOTTOM_V_OFFSET = 18;  // bottom labels drop below the RV
 
 export function Pin({ waypoint, visible, compact = false }: Props) {
   const iconSize = compact ? 16 : 22;
