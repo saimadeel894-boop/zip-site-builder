@@ -30,15 +30,17 @@ export function Pin({ waypoint, visible, compact = false }: Props) {
   const iconTopY = -PIN_HEIGHT - ICON_OFFSET - ICON_RADIUS;
   const iconBottomY = -PIN_HEIGHT - ICON_OFFSET + ICON_RADIUS;
 
-  // Label positions: keep >= LABEL_GAP away from the icon badge in every direction.
+  // Label positions: keep a generous gap away from the icon badge and RV body.
+  // The vertical offset shifts side labels up and bottom labels down so the
+  // RV never sits on the first words of the location name.
   const labelPos =
     side === "left"
-      ? { x: -labelW - (ICON_RADIUS + LABEL_GAP), y: -PIN_HEIGHT - ICON_OFFSET }
+      ? { x: -labelW - (ICON_RADIUS + LABEL_GAP), y: -PIN_HEIGHT - ICON_OFFSET - SIDE_V_OFFSET * -1 }
       : side === "top"
-        ? { x: -labelW / 2, y: iconTopY - LABEL_GAP - labelH / 2 }
+        ? { x: -labelW / 2, y: iconTopY - LABEL_GAP - labelH / 2 + TOP_V_OFFSET }
         : side === "bottom"
-          ? { x: -labelW / 2, y: iconBottomY + LABEL_GAP + labelH / 2 }
-          : { x: ICON_RADIUS + LABEL_GAP, y: -PIN_HEIGHT - ICON_OFFSET };
+          ? { x: -labelW / 2, y: iconBottomY + LABEL_GAP + labelH / 2 + BOTTOM_V_OFFSET }
+          : { x: ICON_RADIUS + LABEL_GAP, y: -PIN_HEIGHT - ICON_OFFSET - SIDE_V_OFFSET * -1 };
 
   return (
     <g data-map-pin={waypoint.id} style={{ transform: `translate(${waypoint.x}px, ${waypoint.y}px)` }}>
